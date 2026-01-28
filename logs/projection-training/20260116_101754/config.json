@@ -1,0 +1,16 @@
+{
+  "experiment_group": "12_views",
+  "dataset": "webtable",
+  "output_dir": "logs/projection-training",
+  "views": [
+    12
+  ],
+  "reference_view": "distilroberta-dj_adpt",
+  "models": [
+    "cl_noval"
+  ],
+  "precision": "bf16-mixed",
+  "metric_batch_size": 65536,
+  "num_workers": 32,
+  "seed": 123
+}

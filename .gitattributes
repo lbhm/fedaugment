@@ -1,0 +1,5 @@
+# Exclude notebooks, scripts, and Tex code from GitHub language statistics
+analysis/** linguist-documentation
+docs/** linguist-documentation
+experiments/** linguist-documentation
+tex/** linguist-documentation
