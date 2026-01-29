@@ -33,7 +33,7 @@ evaluate_aligned.py              evaluate_centralized.py       evaluate_view_rob
     ▼                                    ▼                                    ▼
 logs/augmentations/              logs/augmentations/           logs/view-robustness/
   {dataset}/{group}/               {dataset}/centralized/        {dataset}/{model}/
-    └── *.csv                        └── *.csv                     └── metrics.parquet
+    └── *.csv                        └── *.csv                     └── *_per_view.csv
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                          ANALYSIS PHASE                                         │
