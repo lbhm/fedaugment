@@ -7,6 +7,82 @@
 This repository contains the source code, experiment logs, and result analyses for our paper
 "FedAugment: Table Augmentation Search over Decentralized Data Repositories".
 
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              FedAugment Pipeline                                    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────┐
+│   Raw Table Data     │
+│  (CSV/Parquet files) │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         1. EMBEDDING GENERATION                                   │
+│  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐       ┌─────────────┐       │
+│  │  View 1     │   │  View 2     │   │  View 3     │  ...  │  View N     │       │
+│  │ mpnet +     │   │ distilrob + │   │ gte_base +  │       │ qwen3_8b +  │       │
+│  │ dj_adpt     │   │ dj_adpt     │   │ dj_adpt     │       │ dj_adpt     │       │
+│  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘       └──────┬──────┘       │
+│         │                 │                 │                     │              │
+│         ▼                 ▼                 ▼                     ▼              │
+│    [384-dim]         [768-dim]         [768-dim]            [4096-dim]           │
+│   embeddings        embeddings        embeddings            embeddings           │
+└──────────┬───────────────┬───────────────┬───────────────────────┬───────────────┘
+           │               │               │                       │
+           └───────────────┴───────────────┴───────────────────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                      2. PROJECTION MODEL TRAINING                                 │
+│                                                                                   │
+│   Training Data (WebTable)     Projection Models:                                 │
+│   ┌─────────────────────┐      • CL (Contrastive Learning) ─── Neural network    │
+│   │ Curated subset      │      • LA2M (Local Isometry) ─────── Clustering-based  │
+│   │ (FFT/Grid/Random)   │      • Vec2Vec ───────────────────── GAN-based         │
+│   └─────────────────────┘      • Procrustes ────────────────── Orthogonal align  │
+│                                                                                   │
+│   Output: Learned transformations that map all views → common 1024-dim space     │
+└──────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         3. ALIGNED EMBEDDING SPACE                                │
+│                                                                                   │
+│      View 1        View 2        View 3              View N                       │
+│        │             │             │                   │                          │
+│        └─────────────┴─────────────┴───────────────────┘                          │
+│                              │                                                    │
+│                    ┌─────────▼─────────┐                                          │
+│                    │  Common 1024-dim  │                                          │
+│                    │  Embedding Space  │                                          │
+│                    └─────────┬─────────┘                                          │
+│                              │                                                    │
+│                    ┌─────────▼─────────┐                                          │
+│                    │    HNSW Index     │  ← Fast approximate nearest neighbor     │
+│                    └───────────────────┘                                          │
+└──────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                      4. TABLE AUGMENTATION TASKS                                  │
+│                                                                                   │
+│   ┌─────────────────────────────┐    ┌─────────────────────────────┐             │
+│   │     JOIN DISCOVERY          │    │     UNION DISCOVERY         │             │
+│   │                             │    │                             │             │
+│   │  Query: Column A            │    │  Query: Table X             │             │
+│   │     ↓                       │    │     ↓                       │             │
+│   │  Find columns that can      │    │  Find tables with           │             │
+│   │  be joined with A           │    │  compatible schemas         │             │
+│   │     ↓                       │    │     ↓                       │             │
+│   │  Metrics: P@k, R@k, MAP     │    │  Metrics: P@k, R@k, MAP     │             │
+│   └─────────────────────────────┘    └─────────────────────────────┘             │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
 The repository is structured as follows:
 
 ```bash
@@ -39,6 +115,21 @@ We offer the following optional dependency groups (use `uv sync --extra <group>`
 
 Note that the default PyTorch version depends on your operating system (CPU for Windows and
 Mac, CUDA 12.x for Linux).
+
+## 📚 Glossary
+
+Key terms used throughout this codebase:
+
+| Term | Definition |
+|------|------------|
+| **View** | An embedding space created by a specific combination of embedding model and prompt strategy. Different views capture different semantic aspects of table columns. |
+| **Projection Model** | A learned transformation that aligns embeddings from multiple views into a common vector space, enabling cross-view similarity search. |
+| **Join Discovery** | The task of finding columns across different tables that can be joined (i.e., contain matching or related values). |
+| **Union Discovery** | The task of finding tables that share compatible schemas and can be vertically concatenated (unioned). |
+| **Embedding Pipeline** | A combination of an embedding model (e.g., `mpnet`, `distilroberta`) and a prompt strategy (e.g., `dj_adpt`) that converts table columns into vector representations. |
+| **Feature Archive (`.fa`)** | A directory containing pre-computed embeddings (`embeddings.npy`), column identifiers (`column_ids.npy`), and metadata (`metadata.json`). |
+| **Curation** | The process of selecting a representative subset of training data using algorithms like Farthest-First Traversal (FFT), grid sampling, or random sampling. |
+| **HNSW Index** | Hierarchical Navigable Small World graph index used for efficient approximate nearest neighbor search over embeddings. |
 
 ## 📂 Datasets
 
@@ -172,6 +263,33 @@ After setting up the datasets, you can run all experiments using:
 ```bash
 bash experiments/run_all.sh
 ```
+
+### Paper-to-Code Mapping
+
+| Paper Section | Description | Script/Notebook | Output Location |
+|---------------|-------------|-----------------|-----------------|
+| §5.1 | Embedding generation | `experiments/embeddings/embed_dataset.py` | `data/embeddings/` |
+| §5.2 | Data curation | `experiments/curation/curate_webtable.py` | `data/datasets/webtable/sample-*` |
+| §5.3 | Projection model training | `experiments/projections/train_projection_models.py` | `data/checkpoints/` |
+| §6.1 | Join/Union discovery (aligned) | `experiments/projections/evaluate_aligned.py` | `logs/augmentations/{dataset}/{group}/` |
+| §6.1 | Join/Union discovery (baseline) | `experiments/projections/evaluate_centralized.py` | `logs/augmentations/{dataset}/centralized/` |
+| §6.2 | View robustness analysis | `experiments/projections/evaluate_view_robustness.py` | `logs/view-robustness/` |
+| §6.3 | Efficiency measurements | `experiments/efficiency/measure_projections.py` | `logs/efficiency/` |
+| Fig. 3 | Main results visualization | `analysis/augmentations.ipynb` | - |
+| Fig. 4 | View robustness plots | `analysis/view_robustness.ipynb` | - |
+| Fig. 5 | Curation comparison | `analysis/curation.ipynb` | - |
+| Fig. 6 | Efficiency analysis | `analysis/efficiency.ipynb` | - |
+
+### Model Variants
+
+| Model Name | Description | Paper Reference |
+|------------|-------------|-----------------|
+| `cl_optim` | Contrastive Learning (optimized) | Main CL approach |
+| `la2m_default` | LA2M with PCA reduction | Local Isometry baseline |
+| `la2m_nopca` | LA2M without PCA | LA2M ablation |
+| `v2v` | Vec2Vec GAN-based alignment | Vec2Vec baseline |
+| `union_plus` | Naive zero-padding | Dimension union baseline |
+| `union_minus` | Naive truncation | Dimension intersection baseline |
 
 ### Hardware Requirements
 

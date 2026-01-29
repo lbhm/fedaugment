@@ -1,3 +1,25 @@
+"""Base evaluator for table augmentation tasks (join and union discovery).
+
+This module provides the abstract base class for evaluating embedding-based table
+augmentation approaches. It handles the common infrastructure needed for both
+join discovery (finding columns that can be joined) and union discovery (finding
+tables with compatible schemas).
+
+The evaluation pipeline:
+    1. Load pre-computed embeddings for candidate and query columns
+    2. Build an HNSW index over candidate embeddings for fast similarity search
+    3. Optionally load a projection model to align query embeddings
+    4. Filter ground truth to only include reachable candidates
+    5. Execute task-specific evaluation (implemented by subclasses)
+
+Classes:
+    BaseEvaluator: Abstract base class that subclasses extend for specific tasks.
+
+See Also:
+    - JoinDiscoveryEvaluator: Evaluates join discovery using column-level matching
+    - UnionDiscoveryEvaluator: Evaluates union discovery using table-level matching
+"""
+
 import abc
 import time
 from pathlib import Path
