@@ -56,9 +56,9 @@ bash experiments/run_all.sh
 ```bash
 # Single dataset
 uv run python -m experiments.embeddings.embed_dataset \
-    --dataset freyja \
-    --models mpnet distilroberta \
-    --strategies dj_adpt
+    --data-path data/datasets/freyja \
+    --output-path data/embeddings/freyja \
+    --strategy dj_adpt
 
 # All datasets
 bash experiments/embeddings/embed_all_datasets.sh
