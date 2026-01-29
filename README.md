@@ -2,10 +2,10 @@
 
 ![Python Version](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Flbhm%2Ffedaugment%2Fmain%2Fpyproject.toml)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![License](https://img.shields.io/github/license/lbhm/fedaugment)](https://github.com/lnhm/fedaugment/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/lbhm/fedaugment)](https://github.com/lbhm/fedaugment/blob/main/LICENSE)
 
 This repository contains the source code, experiment logs, and result analyses for our paper
-"FedAugment: Table Augmentation Search over Decentralized Data Repositories".
+**"FedAugment: Table Augmentation Search over Decentralized Data Repositories"**.
 
 ## 🏗️ Architecture Overview
 
