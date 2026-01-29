@@ -7,6 +7,8 @@
 This repository contains the source code, experiment logs, and result analyses for our paper
 "FedAugment: Table Augmentation Search over Decentralized Data Repositories".
 
+## 🏗️ Architecture Overview
+
 The repository is structured as follows:
 
 ```bash
@@ -17,6 +19,78 @@ fedaugment/
 ├── scripts         # utility scripts for data processing and evaluation
 ├── src/fedaugment  # main Python package with our implementation
 └── tests           # unit tests for part of the codebase
+```
+
+The following diagram illustrates the overall architecture of the FedAugment workflow:
+
+```text
++----------------------+
+|    Raw Table Data    |
+| (CSV/Parquet files)  |
++----------+-----------+
+           |
+           v
++----------------------------------------------------------------------------------+
+|                             1. EMBEDDING GENERATION                              |
+|     +-------------+   +-------------+   +-------------+       +-------------+    |
+|     |  View 1     |   |  View 2     |   |  View 3     |  ...  |  View N     |    |
+|     | mpnet +     |   | distilrob + |   | gte_base +  |       | qwen3_8b +  |    |
+|     | dj_adpt     |   | dj_adpt     |   | dj_adpt     |       | dj_adpt     |    |
+|     +------+------+   +------+------+   +------+------+       +------+------+    |
+|            |                 |                 |                     |           |
+|            v                 v                 v                     v           |
+|        [384-dim]         [768-dim]         [768-dim]             [4096-dim]      |
+|        embeddings        embeddings        embeddings            embeddings      |
++------------+-----------------+-----------------+---------------------+----------+
+             |                 |                 |                     |
+             +-----------------+----------+------+---------------------+
+                                          |
+                                          v
++----------------------------------------------------------------------------------+
+|                           2. PROJECTION MODEL TRAINING                           |
+|                                                                                  |
+|  Training Data                Projection Models:                                 |
+|  +---------------------+      - CL (Contrastive Learning) --- Neural network     |
+|  | Curated subset      |      - LA2M (Local Isometry) ------- Clustering-based   |
+|  | (FFT/Grid/Random)   |      - Vec2Vec --------------------- GAN-based          |
+|  +---------------------+      - Procrustes ------------------ Orthogonal align   |
+|                                                                                  |
+|  Output: Learned transformations that map all views to a common vector space     |
++-----------------------------------------+----------------------------------------+
+                                          |
+                                          v
++----------------------------------------------------------------------------------+
+|                            3. ALIGNED EMBEDDING SPACE                            |
+|                                                                                  |
+|      View 1        View 2        View 3     ...      View N                      |
+|        |             |             |                   |                         |
+|        +-------------+-------------+-------------------+                         |
+|                              |                                                   |
+|                    +---------v---------+                                         |
+|                    |      Common       |                                         |
+|                    |  Embedding Space  |                                         |
+|                    +---------+---------+                                         |
+|                              |                                                   |
+|                    +---------v---------+                                         |
+|                    |    HNSW Index     |  < Fast approximate nearest neighbor    |
+|                    +-------------------+                                         |
++-----------------------------------------+----------------------------------------+
+                                          |
+                                          v
++----------------------------------------------------------------------------------+
+|                            4. TABLE AUGMENTATION TASKS                           |
+|                                                                                  |
+|        +-----------------------------+    +-----------------------------+        |
+|        |       JOIN DISCOVERY        |    |       UNION DISCOVERY       |        |
+|        |                             |    |                             |        |
+|        |  Query: Column A            |    |  Query: Table X             |        |
+|        |     v                       |    |     v                       |        |
+|        |  Find columns that can      |    |  Find tables with           |        |
+|        |  be joined with A           |    |  compatible schemas         |        |
+|        |     v                       |    |     v                       |        |
+|        |  Metrics: P@k, R@k, MAP     |    |  Metrics: P@k, R@k, MAP     |        |
+|        +-----------------------------+    +-----------------------------+        |
++----------------------------------------------------------------------------------+
 ```
 
 ## 🚀 Getting Started

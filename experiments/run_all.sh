@@ -4,9 +4,20 @@ set -euxo pipefail
 ulimit -Sn 10000
 cd "$(git rev-parse --show-toplevel)"
 
-# Verify `data/datasets`` exists and is a directory (follows symlinks)
+# Verify `data/datasets` exists and is a directory (follows symlinks)
 if [[ ! -d "data/datasets" ]]; then
-echo "Error: data/datasets is not a directory or a symlink to a directory. Please download the required datasets first." >&2
+    echo "Error: data/datasets is not a directory or a symlink to a directory." >&2
+    echo "" >&2
+    echo "Please download the required datasets first:" >&2
+    echo "  1. Freyja:         https://mydisk.cs.upc.edu/s/QHJbKcyeacxq35f" >&2
+    echo "  2. OmniMatch:      https://zenodo.org/records/15705578" >&2
+    echo "  3. Santos (Small): https://zenodo.org/records/7758091" >&2
+    echo "  4. LakeBench:      https://github.com/DB-121143/LakeBench" >&2
+    echo "" >&2
+    echo "Then place them in data/datasets/ or create a symlink:" >&2
+    echo "  ln -s /path/to/your/datasets data" >&2
+    echo "" >&2
+    echo "See README.md for the expected directory structure." >&2
     exit 1
 fi
 

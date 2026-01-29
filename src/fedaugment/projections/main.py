@@ -1,3 +1,16 @@
+"""Main training and inference pipeline for projection models.
+
+This module provides the core functionality for training and using projection models
+that align embeddings from multiple views (embedding model + strategy combinations)
+into a common vector space. The aligned embeddings can then be used for downstream
+tasks like join discovery and union discovery across decentralized data repositories.
+
+Key functions:
+    - train_projection_model: Train a projection model with Lightning
+    - project_embedding_collection: Apply a trained model to project embeddings
+    - load_projection_model: Load a trained model from a checkpoint
+"""
+
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -47,6 +60,10 @@ def train_projection_model(
     config: TrainingConfig,
 ) -> tuple[L.Trainer, ProjectionModel, PerfMetrics]:
     """Train a projection model based on the provided configuration.
+
+    Args:
+        config: TrainingConfig object specifying data module, projection model,
+            and trainer parameters.
 
     Returns:
         A tuple of (trainer, projection_model, metrics) where metrics contains
@@ -321,6 +338,15 @@ def load_projection_model(checkpoint_path: Path, device: torch.device) -> Projec
 
 
 def init_data_module(config: DataModuleConfig, seed: int) -> DataModule:
+    """Initialize a data module based on the provided configuration.
+
+    Args:
+        config: DataModuleConfig object specifying the data module class and parameters.
+        seed: Random seed for data module initialization.
+
+    Returns:
+        DataModule: An initialized data module instance.
+    """
     data_module_class: type[DataModule] = getattr(data_modules, config.class_)
     return data_module_class(config, seed)
 
@@ -331,6 +357,17 @@ def init_projection_model(
     embedding_dims: list[int],
     data_batch_size: int,
 ) -> ProjectionModel:
+    """Initialize a projection model based on the provided configuration.
+
+    Args:
+        config: ProjectionModelConfig object specifying the projection model class and parameters.
+        pipeline_names: List of pipeline names corresponding to the input embeddings.
+        embedding_dims: List of embedding dimensions corresponding to the input embeddings.
+        data_batch_size: Batch size for data loading during training.
+
+    Returns:
+        ProjectionModel: An initialized projection model instance.
+    """
     model_class: type[ProjectionModel] = getattr(models, config.class_)
     return model_class(
         module_kwargs=config.module_kwargs,
@@ -353,6 +390,9 @@ def random_split[T: np.generic](
         indices: Array of indices to split (shuffled in-place if there is a seed).
         fractions: List of fractions for each split. Must sum to 1.
         seed: Random seed for shuffling. If None, no shuffling is done.
+
+    Returns:
+        List of arrays of indices for each split.
     """
     if not np.isclose(sum(fractions), 1.0):
         raise ValueError("fractions must sum to 1.")

@@ -331,6 +331,7 @@ class ProjectionModelSpec:
 
 # Model registry with all configuration
 PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
+    # A2M: Procrustes-based alignment
     "a2m": ProjectionModelSpec(
         class_="ProcrustesModel",
         module_kwargs=ProcrustesModuleConfig(
@@ -342,6 +343,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         data_module_class="SingleStepTrainingDataModule",
         epochs=0,
     ),
+    # LA2M with PCA: Local alignment with dimensionality reduction
     "la2m_default": ProjectionModelSpec(
         class_="LocalIsometryModel",
         module_kwargs=LocalIsometryModuleConfig(
@@ -353,6 +355,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         data_module_class="SingleStepTrainingDataModule",
         epochs=0,
     ),
+    # LA2M without PCA: Full-dimensional local alignment (reduced_dim=0 disables reduction)
     "la2m_nopca": ProjectionModelSpec(
         class_="LocalIsometryModel",
         module_kwargs=LocalIsometryModuleConfig(
@@ -364,6 +367,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         data_module_class="SingleStepTrainingDataModule",
         epochs=0,
     ),
+    # CL default: Deeper MLP architecture (3 hidden layers) for exploratory experiments
     "cl_default": ProjectionModelSpec(
         class_="ContrastiveLearningModel",
         module_kwargs=CLModuleConfig(
@@ -378,6 +382,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         optimizers=[OptimizerConfig(class_="AdamW", kwargs={"lr": 1e-3, "weight_decay": 0.01})],
         schedulers=[LRSchedulerConfig(class_="CosineAnnealingLR", kwargs={"T_max": 200})],
     ),
+    # CL optimized: Shallower MLP (2 hidden layers) with early stopping
     "cl_optim": ProjectionModelSpec(
         class_="ContrastiveLearningModel",
         module_kwargs=CLModuleConfig(
@@ -391,7 +396,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         criterion=CriterionConfig(class_="MultiViewNTXentLoss", kwargs={"temperature": 0.1}),
         optimizers=[OptimizerConfig(class_="AdamW", kwargs={"lr": 1e-3, "weight_decay": 0.01})],
         schedulers=[LRSchedulerConfig(class_="CosineAnnealingLR", kwargs={"T_max": 200})],
-        patience=20,
+        patience=20,  # Early stopping after 20 epochs without improvement
     ),
     # NOTE: This is the same as cl_optim but without early stopping (and validation overhead)
     "cl_noval": ProjectionModelSpec(
@@ -409,6 +414,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         schedulers=[LRSchedulerConfig(class_="CosineAnnealingLR", kwargs={"T_max": 200})],
         patience=None,
     ),
+    # Vec2Vec: GAN-based approach with discriminators and translators between embedding spaces
     "v2v": ProjectionModelSpec(
         class_="Vec2VecModel",
         module_kwargs=Vec2VecModuleConfig(
@@ -436,6 +442,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         ],
         schedulers=[LRSchedulerConfig(class_="CosineAnnealingLR", kwargs={"T_max": 200})],
     ),
+    # Naive baseline: Zero-padding to match largest embedding dimension (union of dimensions)
     "union_plus": ProjectionModelSpec(
         class_="NaiveModel",
         module_kwargs=NaiveModuleConfig(mode="pad"),
@@ -445,6 +452,7 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         data_module_class="SingleStepTrainingDataModule",
         epochs=0,
     ),
+    # Naive baseline: Truncation to smallest embedding dimension (intersection of dimensions)
     "union_minus": ProjectionModelSpec(
         class_="NaiveModel",
         module_kwargs=NaiveModuleConfig(mode="truncate"),
