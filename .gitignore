@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Caches & IDE files
+.vscode/
+.mypy_cache
+
+# Project-specific files
+.env
+# No trailing slash to capture symbolic links as well
+data
+outputs/
+plots/
+results/

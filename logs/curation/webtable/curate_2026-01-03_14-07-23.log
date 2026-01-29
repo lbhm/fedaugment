@@ -1,0 +1,120 @@
+2026-01-03 14:07:23 | DEBUG    | fedaugment.utils.misc:106 | Experiment setup complete (redirected 530 loggers)
+2026-01-03 14:07:23 | DEBUG    | fedaugment.utils.misc:109 | Set PYTORCH_ALLOC_CONF to 'expandable_segments:True'
+2026-01-03 14:07:23 | INFO     | __main__:17 | Initializing embedding pipeline...
+2026-01-03 14:07:26 | DEBUG    | fedaugment.embeddings.models.sentence_transformer_model:56 | Compiling model...
+2026-01-03 14:07:30 | DEBUG    | fedaugment.embeddings.models.sentence_transformer_model:58 | sentence-transformers/all-mpnet-base-v2 model compiled.
+2026-01-03 14:07:30 | INFO     | __main__:26 | Starting embedding generation...
+2026-01-03 14:07:30 | INFO     | fedaugment.dataset_loader:51 | Initializing dataset loader with datasets from data/datasets/webtable/split/train...
+2026-01-03 14:07:53 | SUCCESS  | fedaugment.dataset_loader:64 | Discovered 2360354 file paths for lazy loading in 23.3571 seconds.
+2026-01-03 14:07:53 | INFO     | fedaugment.curation.curation_manager:71 | Embedding 2360354 datasets in 5 batch(es) of up to 500000 datasets each.
+2026-01-03 14:07:53 | INFO     | fedaugment.dataset_loader:81 | Loading batch 1...
+2026-01-03 14:15:30 | DEBUG    | fedaugment.dataset_loader:90 | Average dataset batch size: 763.60 MB
+2026-01-03 14:15:30 | INFO     | fedaugment.curation.curation_manager:82 | Processing batch 1/5...
+2026-01-03 14:27:26 | INFO     | fedaugment.curation.curation_manager:88 | Generated 2674604 prompts in 715.1467 seconds.
+2026-01-03 15:40:48 | INFO     | fedaugment.curation.curation_manager:97 | Embedded 2674604 prompts in 4402.5406 seconds.
+2026-01-03 15:40:52 | INFO     | fedaugment.curation.curation_manager:105 | Post-processed embeddings in 4.1442 seconds.
+2026-01-03 15:40:53 | INFO     | fedaugment.dataset_loader:81 | Loading batch 2...
+2026-01-03 15:48:17 | DEBUG    | fedaugment.dataset_loader:90 | Average dataset batch size: 764.53 MB
+2026-01-03 15:48:28 | INFO     | fedaugment.curation.curation_manager:82 | Processing batch 2/5...
+2026-01-03 16:00:20 | INFO     | fedaugment.curation.curation_manager:88 | Generated 2669323 prompts in 712.8344 seconds.
+2026-01-03 17:13:26 | INFO     | fedaugment.curation.curation_manager:97 | Embedded 2669323 prompts in 4385.5110 seconds.
+2026-01-03 17:13:30 | INFO     | fedaugment.curation.curation_manager:105 | Post-processed embeddings in 4.2685 seconds.
+2026-01-03 17:13:31 | INFO     | fedaugment.dataset_loader:81 | Loading batch 3...
+2026-01-03 17:20:36 | DEBUG    | fedaugment.dataset_loader:90 | Average dataset batch size: 763.82 MB
+2026-01-03 17:20:48 | INFO     | fedaugment.curation.curation_manager:82 | Processing batch 3/5...
+2026-01-03 17:32:56 | INFO     | fedaugment.curation.curation_manager:88 | Generated 2672852 prompts in 728.0045 seconds.
+2026-01-03 18:46:04 | INFO     | fedaugment.curation.curation_manager:97 | Embedded 2672852 prompts in 4388.3922 seconds.
+2026-01-03 18:46:09 | INFO     | fedaugment.curation.curation_manager:105 | Post-processed embeddings in 4.2198 seconds.
+2026-01-03 18:46:10 | INFO     | fedaugment.dataset_loader:81 | Loading batch 4...
+2026-01-03 18:53:21 | DEBUG    | fedaugment.dataset_loader:90 | Average dataset batch size: 766.11 MB
+2026-01-03 18:53:31 | INFO     | fedaugment.curation.curation_manager:82 | Processing batch 4/5...
+2026-01-03 19:05:14 | INFO     | fedaugment.curation.curation_manager:88 | Generated 2669379 prompts in 703.0353 seconds.
+2026-01-03 20:18:21 | INFO     | fedaugment.curation.curation_manager:97 | Embedded 2669379 prompts in 4386.7227 seconds.
+2026-01-03 20:18:25 | INFO     | fedaugment.curation.curation_manager:105 | Post-processed embeddings in 4.1713 seconds.
+2026-01-03 20:18:26 | INFO     | fedaugment.dataset_loader:81 | Loading batch 5...
+2026-01-03 20:23:28 | DEBUG    | fedaugment.dataset_loader:90 | Average dataset batch size: 722.82 MB
+2026-01-03 20:23:39 | INFO     | fedaugment.curation.curation_manager:82 | Processing batch 5/5...
+2026-01-03 20:32:08 | INFO     | fedaugment.curation.curation_manager:88 | Generated 1923708 prompts in 508.2189 seconds.
+2026-01-03 21:24:38 | INFO     | fedaugment.curation.curation_manager:97 | Embedded 1923708 prompts in 3150.2768 seconds.
+2026-01-03 21:24:41 | INFO     | fedaugment.curation.curation_manager:105 | Post-processed embeddings in 3.0586 seconds.
+2026-01-03 21:24:42 | DEBUG    | fedaugment.curation.curation_manager:114 | Generated embeddings tensor shape: torch.Size([12609866, 768])
+2026-01-03 21:24:42 | DEBUG    | fedaugment.curation.curation_manager:115 | Generated embedding IDs array shape: (12609866,)
+2026-01-03 21:24:42 | SUCCESS  | fedaugment.curation.curation_manager:117 | Embedded 12609866 prompts based on 2360354 datasets in 26232.5610 seconds.
+2026-01-03 21:24:50 | INFO     | __main__:37 | Starting dataset curation...
+2026-01-03 21:24:50 | INFO     | fedaugment.curation.curation_manager:190 | Selecting 12609/12609866 data points using 2 curator(s)...
+2026-01-03 21:24:50 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'fft_euc'...
+2026-01-03 21:36:39 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'fft_euc' selected 12609 data points in 708.9216 seconds.
+2026-01-03 21:36:39 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/fft_euc-mpnet-dj_adpt-k=12609'
+2026-01-03 21:37:51 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 21:37:51 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'fft_cos'...
+2026-01-03 21:49:38 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'fft_cos' selected 12609 data points in 706.0721 seconds.
+2026-01-03 21:49:38 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/fft_cos-mpnet-dj_adpt-k=12609'
+2026-01-03 21:50:51 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 21:50:51 | SUCCESS  | fedaugment.curation.curation_manager:213 | Curation completed in 1560.5436 seconds.
+2026-01-03 21:50:53 | INFO     | fedaugment.curation.curation_manager:172 | Applied PCA to reduce embeddings from 768 to 161 dimensions in 1.4078 seconds.
+2026-01-03 21:50:53 | INFO     | fedaugment.curation.curation_manager:179 | Selected components explain 90.0245% of variance.
+2026-01-03 21:50:53 | DEBUG    | fedaugment.curation.curation_manager:183 | Explained variance ratio of selected components: tensor([0.0982, 0.0665, 0.0399, 0.0284, 0.0223, 0.0197, 0.0183, 0.0169, 0.0155,
+        0.0149, 0.0142, 0.0134, 0.0128, 0.0121, 0.0115, 0.0108, 0.0104, 0.0100,
+        0.0098, 0.0092, 0.0091, 0.0087, 0.0087, 0.0083, 0.0079, 0.0076, 0.0075,
+        0.0074, 0.0071, 0.0071, 0.0066, 0.0065, 0.0065, 0.0063, 0.0061, 0.0061,
+        0.0059, 0.0059, 0.0057, 0.0056, 0.0055, 0.0055, 0.0053, 0.0052, 0.0051,
+        0.0050, 0.0049, 0.0048, 0.0047, 0.0045, 0.0045, 0.0044, 0.0044, 0.0043,
+        0.0042, 0.0042, 0.0041, 0.0041, 0.0039, 0.0039, 0.0038, 0.0037, 0.0037,
+        0.0037, 0.0035, 0.0035, 0.0035, 0.0034, 0.0034, 0.0033, 0.0032, 0.0032,
+        0.0032, 0.0031, 0.0031, 0.0031, 0.0031, 0.0030, 0.0029, 0.0028, 0.0028,
+        0.0028, 0.0027, 0.0027, 0.0027, 0.0026, 0.0026, 0.0026, 0.0025, 0.0025,
+        0.0025, 0.0024, 0.0024, 0.0023, 0.0023, 0.0023, 0.0023, 0.0023, 0.0022,
+        0.0022, 0.0022, 0.0021, 0.0021, 0.0021, 0.0021, 0.0020, 0.0020, 0.0020,
+        0.0020, 0.0020, 0.0019, 0.0019, 0.0019, 0.0019, 0.0018, 0.0018, 0.0018,
+        0.0018, 0.0018, 0.0018, 0.0018, 0.0017, 0.0017, 0.0017, 0.0017, 0.0017,
+        0.0017, 0.0016, 0.0016, 0.0016, 0.0016, 0.0015, 0.0015, 0.0015, 0.0015,
+        0.0015, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0013,
+        0.0013, 0.0013, 0.0013, 0.0013, 0.0013, 0.0013, 0.0012, 0.0012, 0.0012,
+        0.0012, 0.0012, 0.0012, 0.0012, 0.0011, 0.0011, 0.0011, 0.0011],
+       device='cuda:0')
+2026-01-03 21:50:53 | INFO     | fedaugment.curation.curation_manager:190 | Selecting 12609/12609866 data points using 2 curator(s)...
+2026-01-03 21:50:53 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'fft_euc'...
+2026-01-03 21:54:54 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'fft_euc' selected 12609 data points in 241.0244 seconds.
+2026-01-03 21:54:54 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/fft_euc-mpnet-dj_adpt-k=12609-pca=0.9'
+2026-01-03 21:56:09 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 21:56:09 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'fft_cos'...
+2026-01-03 22:00:09 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'fft_cos' selected 12609 data points in 239.9358 seconds.
+2026-01-03 22:00:09 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/fft_cos-mpnet-dj_adpt-k=12609-pca=0.9'
+2026-01-03 22:01:22 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 22:01:22 | SUCCESS  | fedaugment.curation.curation_manager:213 | Curation completed in 630.0163 seconds.
+2026-01-03 22:01:43 | INFO     | fedaugment.curation.curation_manager:190 | Selecting 12609/12609866 data points using 2 curator(s)...
+2026-01-03 22:01:43 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'grid'...
+2026-01-03 22:06:12 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'grid' selected 12609 data points in 268.8503 seconds.
+2026-01-03 22:06:12 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/grid-mpnet-dj_adpt-k=12609'
+2026-01-03 22:07:31 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 22:07:31 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'random'...
+2026-01-03 22:07:31 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'random' selected 12609 data points in 0.3218 seconds.
+2026-01-03 22:07:31 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/random-mpnet-dj_adpt-k=12609'
+2026-01-03 22:08:48 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 22:08:48 | SUCCESS  | fedaugment.curation.curation_manager:213 | Curation completed in 425.1999 seconds.
+2026-01-03 22:08:54 | INFO     | fedaugment.curation.curation_manager:172 | Applied PCA to reduce embeddings from 768 to 161 dimensions in 5.8635 seconds.
+2026-01-03 22:08:54 | INFO     | fedaugment.curation.curation_manager:179 | Selected components explain 90.0515% of variance.
+2026-01-03 22:08:54 | DEBUG    | fedaugment.curation.curation_manager:183 | Explained variance ratio of selected components: tensor([0.0983, 0.0665, 0.0399, 0.0284, 0.0223, 0.0197, 0.0183, 0.0169, 0.0156,
+        0.0149, 0.0142, 0.0134, 0.0128, 0.0121, 0.0115, 0.0108, 0.0104, 0.0100,
+        0.0098, 0.0092, 0.0091, 0.0087, 0.0087, 0.0083, 0.0079, 0.0076, 0.0075,
+        0.0074, 0.0071, 0.0071, 0.0066, 0.0065, 0.0065, 0.0063, 0.0061, 0.0061,
+        0.0059, 0.0059, 0.0057, 0.0056, 0.0055, 0.0055, 0.0053, 0.0052, 0.0051,
+        0.0050, 0.0049, 0.0048, 0.0047, 0.0045, 0.0045, 0.0044, 0.0044, 0.0043,
+        0.0042, 0.0042, 0.0041, 0.0041, 0.0039, 0.0039, 0.0038, 0.0037, 0.0037,
+        0.0037, 0.0035, 0.0035, 0.0035, 0.0034, 0.0034, 0.0033, 0.0032, 0.0032,
+        0.0032, 0.0031, 0.0031, 0.0031, 0.0031, 0.0030, 0.0029, 0.0028, 0.0028,
+        0.0028, 0.0027, 0.0027, 0.0027, 0.0026, 0.0026, 0.0026, 0.0025, 0.0025,
+        0.0025, 0.0024, 0.0024, 0.0023, 0.0023, 0.0023, 0.0023, 0.0023, 0.0022,
+        0.0022, 0.0022, 0.0021, 0.0021, 0.0021, 0.0021, 0.0020, 0.0020, 0.0020,
+        0.0020, 0.0020, 0.0019, 0.0019, 0.0019, 0.0019, 0.0018, 0.0018, 0.0018,
+        0.0018, 0.0018, 0.0018, 0.0018, 0.0017, 0.0017, 0.0017, 0.0017, 0.0017,
+        0.0017, 0.0016, 0.0016, 0.0016, 0.0016, 0.0015, 0.0015, 0.0015, 0.0015,
+        0.0015, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0014, 0.0013,
+        0.0013, 0.0013, 0.0013, 0.0013, 0.0013, 0.0013, 0.0012, 0.0012, 0.0012,
+        0.0012, 0.0012, 0.0012, 0.0012, 0.0011, 0.0011, 0.0011, 0.0011])
+2026-01-03 22:08:54 | INFO     | fedaugment.curation.curation_manager:190 | Selecting 12609/12609866 data points using 1 curator(s)...
+2026-01-03 22:08:54 | INFO     | fedaugment.curation.curation_manager:195 | Curating data using 'grid'...
+2026-01-03 22:10:14 | INFO     | fedaugment.curation.curation_manager:197 | Curator 'grid' selected 12609 data points in 79.9894 seconds.
+2026-01-03 22:10:14 | INFO     | fedaugment.curation.curation_manager:209 | Saving curated columns to 'data/datasets/webtable/sample-001/grid-mpnet-dj_adpt-k=12609-pca=0.9'
+2026-01-03 22:11:33 | INFO     | fedaugment.curation.curation_manager:277 | Copied 12609 column projections.
+2026-01-03 22:11:33 | SUCCESS  | fedaugment.curation.curation_manager:213 | Curation completed in 165.0530 seconds.
