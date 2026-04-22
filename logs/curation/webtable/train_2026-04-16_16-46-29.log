@@ -1,0 +1,295 @@
+2026-04-16 16:46:29 | DEBUG    | fedaugment.utils.misc:107 | Experiment setup complete (redirected 680 loggers)
+2026-04-16 16:46:29 | DEBUG    | fedaugment.utils.misc:110 | Set PYTORCH_ALLOC_CONF to 'expandable_segments:True'
+2026-04-16 16:46:29 | INFO     | __main__:84 | Evaluating on full train split of webtable
+2026-04-16 16:46:29 | DEBUG    | fedaugment.projections.main:73 | Experiment configuration: {"experiment_name":"webtable_full","experiment_group":"curation","experiment_version":1,"seed":42,"data_module":{"class_":"DefaultDataModule","data":{"train":["data/embeddings/webtable/split/train/distilroberta-dj_adpt.fa","data/embeddings/webtable/split/train/mini_l12-dj_adpt.fa","data/embeddings/webtable/split/train/mini_l6-dj_adpt.fa","data/embeddings/webtable/split/train/gte_base-dj_adpt.fa","data/embeddings/webtable/split/train/gtr_t5-dj_adpt.fa","data/embeddings/webtable/split/train/mpnet-dj_adpt.fa"],"val":null,"test":["data/embeddings/webtable/split/test/distilroberta-dj_adpt.fa","data/embeddings/webtable/split/test/mini_l12-dj_adpt.fa","data/embeddings/webtable/split/test/mini_l6-dj_adpt.fa","data/embeddings/webtable/split/test/gte_base-dj_adpt.fa","data/embeddings/webtable/split/test/gtr_t5-dj_adpt.fa","data/embeddings/webtable/split/test/mpnet-dj_adpt.fa"]},"mmap_mode":null,"batch_size":4096,"num_workers":2,"pin_memory":true,"persistent_workers":true,"prefetch_factor":5,"verify_column_ids":true},"projection_model":{"class_":"ContrastiveLearningModel","module_kwargs":{"model_type":"projection_head","out_dim":1024,"hidden_dims":[1024,1536,1536],"activation":"silu","normalization":"batch","dropout":0.0,"no_val_orchestrator":true,"no_test_orchestrator":false},"criterion":{"class_":"MultiViewNTXentLoss","kwargs":{"temperature":0.1}},"optimizers":[{"class_":"AdamW","kwargs":{"lr":0.001,"weight_decay":0.01}}],"schedulers":[{"class_":"OneCycleLR","interval":"epoch","frequency":1,"monitor":null,"kwargs":{"max_lr":0.003,"total_steps":null,"pct_start":0.1,"anneal_strategy":"cos","div_factor":10.0,"final_div_factor":1000.0}}],"metric_batch_size":65536},"trainer":{"max_epochs":250,"accelerator":"gpu","check_val_every_n_epoch":1,"devices":"auto","deterministic":false,"enable_checkpointing":true,"enable_model_summary":true,"enable_progress_bar":true,"log_every_n_steps":50,"patience":null,"max_time":null,"num_sanity_val_steps":2,"precision":"bf16-mixed","profiler":null},"compile_model":true}
+2026-04-16 16:46:29 | INFO     | lightning.fabric.utilities.seed:57 | Seed set to 42
+2026-04-16 16:46:47 | INFO     | fedaugment.projections.main:84 | Compiling projection model...
+2026-04-16 16:46:47 | INFO     | fedaugment.projections.main:86 | Projection model compiled
+2026-04-16 16:46:47 | INFO     | fedaugment.projections.main:88 | Initializing trainer...
+2026-04-16 16:46:47 | INFO     | lightning_utilities.core.rank_zero:60 | Using bfloat16 Automatic Mixed Precision (AMP)
+2026-04-16 16:46:47 | INFO     | lightning_utilities.core.rank_zero:60 | GPU available: True (cuda), used: True
+2026-04-16 16:46:47 | INFO     | lightning_utilities.core.rank_zero:60 | TPU available: False, using: 0 TPU cores
+2026-04-16 16:46:47 | INFO     | fedaugment.projections.main:155 | Trainer initialized
+2026-04-16 16:46:47 | INFO     | fedaugment.projections.main:165 | Starting training phase...
+2026-04-16 16:46:47 | INFO     | lightning.pytorch.accelerators.cuda:61 | LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2026-04-16 16:46:47 | INFO     | lightning_utilities.core.rank_zero:60 | Loading `train_dataloader` to estimate number of stepping batches.
+2026-04-16 16:46:48 | INFO     | fedaugment.projections.models.projection_model:123 | Setting OneCycleLR total_steps to trainer.estimated_stepping_batches=769750.
+2026-04-16 16:46:48 | WARNING  | fedaugment.projections.models.projection_model:134 | OneCycleLR requires interval='step'. Overriding configured interval='epoch' to 'step'.
+2026-04-16 16:46:48 | WARNING  | fedaugment.utils.misc:103 | UserWarning: Precision bf16-mixed is not supported by the model summary.  Estimated model size in MB will not be accurate. Using 32 bits instead. (/home/lennart-ldap/projects/fedaugment/.venv/lib/python3.13/site-packages/lightning/pytorch/utilities/model_summary/model_summary.py:242)
+2026-04-16 16:46:48 | INFO     | lightning.pytorch.callbacks.model_summary:110 |
+  | Name              | Type                         | Params | Mode  | FLOPs
+-----------------------------------------------------------------------------------
+0 | criterion         | MultiViewNTXentLoss          | 0      | train | 0
+1 | val_metrics       | MetricCollection             | 0      | train | 0
+2 | test_metrics      | MetricCollection             | 0      | train | 0
+3 | val_orchestrator  | CosineSimilarityOrchestrator | 0      | train | 0
+4 | test_orchestrator | CosineSimilarityOrchestrator | 0      | train | 0
+5 | projection_heads  | ModuleList                   | 37.0 M | train | 0
+-----------------------------------------------------------------------------------
+37.0 M    Trainable params
+0         Non-trainable params
+37.0 M    Total params
+148.120   Total estimated model params size (MB)
+89        Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+2026-04-16 16:46:48 | INFO     | fedaugment.utils.logger:38 | {'module_kwargs': CLModuleConfig(model_type='projection_head', out_dim=1024, hidden_dims=[1024, 1536, 1536], activation='silu', normalization='batch', dropout=0.0, no_val_orchestrator=True, no_test_orchestrator=False), 'criterion': CriterionConfig(class_='MultiViewNTXentLoss', kwargs={'temperature': 0.1}), 'optim_configs': [OptimizerConfig(class_='AdamW', kwargs={'lr': 0.001, 'weight_decay': 0.01})], 'sched_configs': [LRSchedulerConfig(class_='OneCycleLR', interval='epoch', frequency=1, monitor=None, kwargs={'max_lr': 0.003, 'total_steps': None, 'pct_start': 0.1, 'anneal_strategy': 'cos', 'div_factor': 10.0, 'final_div_factor': 1000.0})], 'pipeline_names': ['distilroberta-dj_adpt', 'mini_l12-dj_adpt', 'mini_l6-dj_adpt', 'gte_base-dj_adpt', 'gtr_t5-dj_adpt', 'mpnet-dj_adpt'], 'embedding_dims': [768, 384, 384, 768, 768, 768], 'data_batch_size': 4096, 'metric_batch_size': 65536}
+2026-04-16 17:13:51 | INFO     | fedaugment.utils.logger:44 | Epoch 0: train_loss: 2.69184
+2026-04-16 17:18:50 | INFO     | fedaugment.utils.logger:44 | Epoch 1: train_loss: 2.44131
+2026-04-16 17:23:50 | INFO     | fedaugment.utils.logger:44 | Epoch 2: train_loss: 2.39797
+2026-04-16 17:28:54 | INFO     | fedaugment.utils.logger:44 | Epoch 3: train_loss: 2.37473
+2026-04-16 17:34:34 | INFO     | fedaugment.utils.logger:44 | Epoch 4: train_loss: 2.35896
+2026-04-16 17:40:05 | INFO     | fedaugment.utils.logger:44 | Epoch 5: train_loss: 2.34635
+2026-04-16 17:45:37 | INFO     | fedaugment.utils.logger:44 | Epoch 6: train_loss: 2.33536
+2026-04-16 17:51:23 | INFO     | fedaugment.utils.logger:44 | Epoch 7: train_loss: 2.32555
+2026-04-16 17:56:59 | INFO     | fedaugment.utils.logger:44 | Epoch 8: train_loss: 2.31654
+2026-04-16 18:02:38 | INFO     | fedaugment.utils.logger:44 | Epoch 9: train_loss: 2.30765
+2026-04-16 18:08:22 | INFO     | fedaugment.utils.logger:44 | Epoch 10: train_loss: 2.29960
+2026-04-16 18:13:54 | INFO     | fedaugment.utils.logger:44 | Epoch 11: train_loss: 2.29224
+2026-04-16 18:19:15 | INFO     | fedaugment.utils.logger:44 | Epoch 12: train_loss: 2.28566
+2026-04-16 18:24:48 | INFO     | fedaugment.utils.logger:44 | Epoch 13: train_loss: 2.27980
+2026-04-16 18:30:35 | INFO     | fedaugment.utils.logger:44 | Epoch 14: train_loss: 2.27449
+2026-04-16 18:36:32 | INFO     | fedaugment.utils.logger:44 | Epoch 15: train_loss: 2.26989
+2026-04-16 18:42:11 | INFO     | fedaugment.utils.logger:44 | Epoch 16: train_loss: 2.26552
+2026-04-16 18:47:33 | INFO     | fedaugment.utils.logger:44 | Epoch 17: train_loss: 2.26191
+2026-04-16 18:52:56 | INFO     | fedaugment.utils.logger:44 | Epoch 18: train_loss: 2.25878
+2026-04-16 18:58:14 | INFO     | fedaugment.utils.logger:44 | Epoch 19: train_loss: 2.25563
+2026-04-16 19:03:43 | INFO     | fedaugment.utils.logger:44 | Epoch 20: train_loss: 2.25313
+2026-04-16 19:09:20 | INFO     | fedaugment.utils.logger:44 | Epoch 21: train_loss: 2.25081
+2026-04-16 19:15:21 | INFO     | fedaugment.utils.logger:44 | Epoch 22: train_loss: 2.24880
+2026-04-16 19:20:46 | INFO     | fedaugment.utils.logger:44 | Epoch 23: train_loss: 2.24692
+2026-04-16 19:26:12 | INFO     | fedaugment.utils.logger:44 | Epoch 24: train_loss: 2.24504
+2026-04-16 19:31:49 | INFO     | fedaugment.utils.logger:44 | Epoch 25: train_loss: 2.24331
+2026-04-16 19:37:04 | INFO     | fedaugment.utils.logger:44 | Epoch 26: train_loss: 2.24193
+2026-04-16 19:42:44 | INFO     | fedaugment.utils.logger:44 | Epoch 27: train_loss: 2.24057
+2026-04-16 19:48:34 | INFO     | fedaugment.utils.logger:44 | Epoch 28: train_loss: 2.23960
+2026-04-16 19:53:46 | INFO     | fedaugment.utils.logger:44 | Epoch 29: train_loss: 2.23855
+2026-04-16 19:59:22 | INFO     | fedaugment.utils.logger:44 | Epoch 30: train_loss: 2.23755
+2026-04-16 20:04:43 | INFO     | fedaugment.utils.logger:44 | Epoch 31: train_loss: 2.23699
+2026-04-16 20:10:19 | INFO     | fedaugment.utils.logger:44 | Epoch 32: train_loss: 2.23596
+2026-04-16 20:15:40 | INFO     | fedaugment.utils.logger:44 | Epoch 33: train_loss: 2.23533
+2026-04-16 20:21:13 | INFO     | fedaugment.utils.logger:44 | Epoch 34: train_loss: 2.23477
+2026-04-16 20:26:44 | INFO     | fedaugment.utils.logger:44 | Epoch 35: train_loss: 2.23425
+2026-04-16 20:32:12 | INFO     | fedaugment.utils.logger:44 | Epoch 36: train_loss: 2.23366
+2026-04-16 20:37:41 | INFO     | fedaugment.utils.logger:44 | Epoch 37: train_loss: 2.23298
+2026-04-16 20:43:15 | INFO     | fedaugment.utils.logger:44 | Epoch 38: train_loss: 2.23270
+2026-04-16 20:48:40 | INFO     | fedaugment.utils.logger:44 | Epoch 39: train_loss: 2.23241
+2026-04-16 20:54:21 | INFO     | fedaugment.utils.logger:44 | Epoch 40: train_loss: 2.23177
+2026-04-16 20:59:44 | INFO     | fedaugment.utils.logger:44 | Epoch 41: train_loss: 2.23162
+2026-04-16 21:05:12 | INFO     | fedaugment.utils.logger:44 | Epoch 42: train_loss: 2.23108
+2026-04-16 21:10:38 | INFO     | fedaugment.utils.logger:44 | Epoch 43: train_loss: 2.23067
+2026-04-16 21:16:13 | INFO     | fedaugment.utils.logger:44 | Epoch 44: train_loss: 2.23053
+2026-04-16 21:21:49 | INFO     | fedaugment.utils.logger:44 | Epoch 45: train_loss: 2.23006
+2026-04-16 21:27:20 | INFO     | fedaugment.utils.logger:44 | Epoch 46: train_loss: 2.22984
+2026-04-16 21:32:17 | INFO     | fedaugment.utils.logger:44 | Epoch 47: train_loss: 2.22945
+2026-04-16 21:37:39 | INFO     | fedaugment.utils.logger:44 | Epoch 48: train_loss: 2.22927
+2026-04-16 21:43:27 | INFO     | fedaugment.utils.logger:44 | Epoch 49: train_loss: 2.22911
+2026-04-16 21:48:53 | INFO     | fedaugment.utils.logger:44 | Epoch 50: train_loss: 2.22889
+2026-04-16 21:54:17 | INFO     | fedaugment.utils.logger:44 | Epoch 51: train_loss: 2.22836
+2026-04-16 21:59:48 | INFO     | fedaugment.utils.logger:44 | Epoch 52: train_loss: 2.22831
+2026-04-16 22:05:23 | INFO     | fedaugment.utils.logger:44 | Epoch 53: train_loss: 2.22787
+2026-04-16 22:11:11 | INFO     | fedaugment.utils.logger:44 | Epoch 54: train_loss: 2.22783
+2026-04-16 22:16:46 | INFO     | fedaugment.utils.logger:44 | Epoch 55: train_loss: 2.22773
+2026-04-16 22:22:17 | INFO     | fedaugment.utils.logger:44 | Epoch 56: train_loss: 2.22764
+2026-04-16 22:27:41 | INFO     | fedaugment.utils.logger:44 | Epoch 57: train_loss: 2.22731
+2026-04-16 22:33:16 | INFO     | fedaugment.utils.logger:44 | Epoch 58: train_loss: 2.22711
+2026-04-16 22:38:53 | INFO     | fedaugment.utils.logger:44 | Epoch 59: train_loss: 2.22685
+2026-04-16 22:44:37 | INFO     | fedaugment.utils.logger:44 | Epoch 60: train_loss: 2.22694
+2026-04-16 22:50:16 | INFO     | fedaugment.utils.logger:44 | Epoch 61: train_loss: 2.22652
+2026-04-16 22:56:11 | INFO     | fedaugment.utils.logger:44 | Epoch 62: train_loss: 2.22628
+2026-04-16 23:02:02 | INFO     | fedaugment.utils.logger:44 | Epoch 63: train_loss: 2.22636
+2026-04-16 23:08:21 | INFO     | fedaugment.utils.logger:44 | Epoch 64: train_loss: 2.22605
+2026-04-16 23:14:04 | INFO     | fedaugment.utils.logger:44 | Epoch 65: train_loss: 2.22579
+2026-04-16 23:19:50 | INFO     | fedaugment.utils.logger:44 | Epoch 66: train_loss: 2.22571
+2026-04-16 23:25:13 | INFO     | fedaugment.utils.logger:44 | Epoch 67: train_loss: 2.22559
+2026-04-16 23:30:21 | INFO     | fedaugment.utils.logger:44 | Epoch 68: train_loss: 2.22535
+2026-04-16 23:35:35 | INFO     | fedaugment.utils.logger:44 | Epoch 69: train_loss: 2.22529
+2026-04-16 23:41:10 | INFO     | fedaugment.utils.logger:44 | Epoch 70: train_loss: 2.22498
+2026-04-16 23:46:35 | INFO     | fedaugment.utils.logger:44 | Epoch 71: train_loss: 2.22506
+2026-04-16 23:52:14 | INFO     | fedaugment.utils.logger:44 | Epoch 72: train_loss: 2.22473
+2026-04-16 23:58:17 | INFO     | fedaugment.utils.logger:44 | Epoch 73: train_loss: 2.22456
+2026-04-17 00:03:48 | INFO     | fedaugment.utils.logger:44 | Epoch 74: train_loss: 2.22445
+2026-04-17 00:09:29 | INFO     | fedaugment.utils.logger:44 | Epoch 75: train_loss: 2.22428
+2026-04-17 00:15:15 | INFO     | fedaugment.utils.logger:44 | Epoch 76: train_loss: 2.22415
+2026-04-17 00:20:57 | INFO     | fedaugment.utils.logger:44 | Epoch 77: train_loss: 2.22391
+2026-04-17 00:26:24 | INFO     | fedaugment.utils.logger:44 | Epoch 78: train_loss: 2.22406
+2026-04-17 00:32:03 | INFO     | fedaugment.utils.logger:44 | Epoch 79: train_loss: 2.22365
+2026-04-17 00:37:32 | INFO     | fedaugment.utils.logger:44 | Epoch 80: train_loss: 2.22364
+2026-04-17 00:42:48 | INFO     | fedaugment.utils.logger:44 | Epoch 81: train_loss: 2.22330
+2026-04-17 00:48:25 | INFO     | fedaugment.utils.logger:44 | Epoch 82: train_loss: 2.22320
+2026-04-17 00:54:06 | INFO     | fedaugment.utils.logger:44 | Epoch 83: train_loss: 2.22300
+2026-04-17 00:59:46 | INFO     | fedaugment.utils.logger:44 | Epoch 84: train_loss: 2.22298
+2026-04-17 01:05:41 | INFO     | fedaugment.utils.logger:44 | Epoch 85: train_loss: 2.22286
+2026-04-17 01:11:22 | INFO     | fedaugment.utils.logger:44 | Epoch 86: train_loss: 2.22254
+2026-04-17 01:16:59 | INFO     | fedaugment.utils.logger:44 | Epoch 87: train_loss: 2.22271
+2026-04-17 01:22:42 | INFO     | fedaugment.utils.logger:44 | Epoch 88: train_loss: 2.22215
+2026-04-17 01:28:36 | INFO     | fedaugment.utils.logger:44 | Epoch 89: train_loss: 2.22206
+2026-04-17 01:34:03 | INFO     | fedaugment.utils.logger:44 | Epoch 90: train_loss: 2.22197
+2026-04-17 01:39:16 | INFO     | fedaugment.utils.logger:44 | Epoch 91: train_loss: 2.22176
+2026-04-17 01:44:38 | INFO     | fedaugment.utils.logger:44 | Epoch 92: train_loss: 2.22168
+2026-04-17 01:50:16 | INFO     | fedaugment.utils.logger:44 | Epoch 93: train_loss: 2.22152
+2026-04-17 01:55:57 | INFO     | fedaugment.utils.logger:44 | Epoch 94: train_loss: 2.22142
+2026-04-17 02:01:38 | INFO     | fedaugment.utils.logger:44 | Epoch 95: train_loss: 2.22123
+2026-04-17 02:07:14 | INFO     | fedaugment.utils.logger:44 | Epoch 96: train_loss: 2.22105
+2026-04-17 02:12:51 | INFO     | fedaugment.utils.logger:44 | Epoch 97: train_loss: 2.22089
+2026-04-17 02:18:24 | INFO     | fedaugment.utils.logger:44 | Epoch 98: train_loss: 2.22075
+2026-04-17 02:23:59 | INFO     | fedaugment.utils.logger:44 | Epoch 99: train_loss: 2.22052
+2026-04-17 02:29:19 | INFO     | fedaugment.utils.logger:44 | Epoch 100: train_loss: 2.22049
+2026-04-17 02:34:56 | INFO     | fedaugment.utils.logger:44 | Epoch 101: train_loss: 2.22032
+2026-04-17 02:40:01 | INFO     | fedaugment.utils.logger:44 | Epoch 102: train_loss: 2.22030
+2026-04-17 02:45:48 | INFO     | fedaugment.utils.logger:44 | Epoch 103: train_loss: 2.22006
+2026-04-17 02:51:10 | INFO     | fedaugment.utils.logger:44 | Epoch 104: train_loss: 2.21986
+2026-04-17 02:56:41 | INFO     | fedaugment.utils.logger:44 | Epoch 105: train_loss: 2.21970
+2026-04-17 03:02:28 | INFO     | fedaugment.utils.logger:44 | Epoch 106: train_loss: 2.21954
+2026-04-17 03:07:53 | INFO     | fedaugment.utils.logger:44 | Epoch 107: train_loss: 2.21939
+2026-04-17 03:13:29 | INFO     | fedaugment.utils.logger:44 | Epoch 108: train_loss: 2.21928
+2026-04-17 03:19:25 | INFO     | fedaugment.utils.logger:44 | Epoch 109: train_loss: 2.21893
+2026-04-17 03:24:56 | INFO     | fedaugment.utils.logger:44 | Epoch 110: train_loss: 2.21872
+2026-04-17 03:30:21 | INFO     | fedaugment.utils.logger:44 | Epoch 111: train_loss: 2.21869
+2026-04-17 03:35:44 | INFO     | fedaugment.utils.logger:44 | Epoch 112: train_loss: 2.21847
+2026-04-17 03:41:08 | INFO     | fedaugment.utils.logger:44 | Epoch 113: train_loss: 2.21820
+2026-04-17 03:46:32 | INFO     | fedaugment.utils.logger:44 | Epoch 114: train_loss: 2.21834
+2026-04-17 03:52:11 | INFO     | fedaugment.utils.logger:44 | Epoch 115: train_loss: 2.21789
+2026-04-17 03:57:32 | INFO     | fedaugment.utils.logger:44 | Epoch 116: train_loss: 2.21780
+2026-04-17 04:03:04 | INFO     | fedaugment.utils.logger:44 | Epoch 117: train_loss: 2.21769
+2026-04-17 04:08:15 | INFO     | fedaugment.utils.logger:44 | Epoch 118: train_loss: 2.21751
+2026-04-17 04:14:08 | INFO     | fedaugment.utils.logger:44 | Epoch 119: train_loss: 2.21730
+2026-04-17 04:19:43 | INFO     | fedaugment.utils.logger:44 | Epoch 120: train_loss: 2.21711
+2026-04-17 04:25:08 | INFO     | fedaugment.utils.logger:44 | Epoch 121: train_loss: 2.21711
+2026-04-17 04:30:47 | INFO     | fedaugment.utils.logger:44 | Epoch 122: train_loss: 2.21689
+2026-04-17 04:36:18 | INFO     | fedaugment.utils.logger:44 | Epoch 123: train_loss: 2.21663
+2026-04-17 04:42:05 | INFO     | fedaugment.utils.logger:44 | Epoch 124: train_loss: 2.21627
+2026-04-17 04:47:33 | INFO     | fedaugment.utils.logger:44 | Epoch 125: train_loss: 2.21634
+2026-04-17 04:53:04 | INFO     | fedaugment.utils.logger:44 | Epoch 126: train_loss: 2.21621
+2026-04-17 04:58:31 | INFO     | fedaugment.utils.logger:44 | Epoch 127: train_loss: 2.21587
+2026-04-17 05:04:03 | INFO     | fedaugment.utils.logger:44 | Epoch 128: train_loss: 2.21582
+2026-04-17 05:09:35 | INFO     | fedaugment.utils.logger:44 | Epoch 129: train_loss: 2.21558
+2026-04-17 05:15:14 | INFO     | fedaugment.utils.logger:44 | Epoch 130: train_loss: 2.21542
+2026-04-17 05:20:26 | INFO     | fedaugment.utils.logger:44 | Epoch 131: train_loss: 2.21513
+2026-04-17 05:26:07 | INFO     | fedaugment.utils.logger:44 | Epoch 132: train_loss: 2.21506
+2026-04-17 05:31:05 | INFO     | fedaugment.utils.logger:44 | Epoch 133: train_loss: 2.21503
+2026-04-17 05:36:03 | INFO     | fedaugment.utils.logger:44 | Epoch 134: train_loss: 2.21466
+2026-04-17 05:41:13 | INFO     | fedaugment.utils.logger:44 | Epoch 135: train_loss: 2.21439
+2026-04-17 05:46:15 | INFO     | fedaugment.utils.logger:44 | Epoch 136: train_loss: 2.21421
+2026-04-17 05:51:44 | INFO     | fedaugment.utils.logger:44 | Epoch 137: train_loss: 2.21413
+2026-04-17 05:57:04 | INFO     | fedaugment.utils.logger:44 | Epoch 138: train_loss: 2.21407
+2026-04-17 06:02:32 | INFO     | fedaugment.utils.logger:44 | Epoch 139: train_loss: 2.21365
+2026-04-17 06:07:53 | INFO     | fedaugment.utils.logger:44 | Epoch 140: train_loss: 2.21368
+2026-04-17 06:13:11 | INFO     | fedaugment.utils.logger:44 | Epoch 141: train_loss: 2.21335
+2026-04-17 06:18:23 | INFO     | fedaugment.utils.logger:44 | Epoch 142: train_loss: 2.21332
+2026-04-17 06:23:56 | INFO     | fedaugment.utils.logger:44 | Epoch 143: train_loss: 2.21295
+2026-04-17 06:29:38 | INFO     | fedaugment.utils.logger:44 | Epoch 144: train_loss: 2.21290
+2026-04-17 06:35:14 | INFO     | fedaugment.utils.logger:44 | Epoch 145: train_loss: 2.21262
+2026-04-17 06:40:43 | INFO     | fedaugment.utils.logger:44 | Epoch 146: train_loss: 2.21249
+2026-04-17 06:45:46 | INFO     | fedaugment.utils.logger:44 | Epoch 147: train_loss: 2.21237
+2026-04-17 06:51:03 | INFO     | fedaugment.utils.logger:44 | Epoch 148: train_loss: 2.21209
+2026-04-17 06:56:48 | INFO     | fedaugment.utils.logger:44 | Epoch 149: train_loss: 2.21194
+2026-04-17 07:02:20 | INFO     | fedaugment.utils.logger:44 | Epoch 150: train_loss: 2.21159
+2026-04-17 07:07:50 | INFO     | fedaugment.utils.logger:44 | Epoch 151: train_loss: 2.21155
+2026-04-17 07:13:46 | INFO     | fedaugment.utils.logger:44 | Epoch 152: train_loss: 2.21129
+2026-04-17 07:20:01 | INFO     | fedaugment.utils.logger:44 | Epoch 153: train_loss: 2.21127
+2026-04-17 07:25:51 | INFO     | fedaugment.utils.logger:44 | Epoch 154: train_loss: 2.21102
+2026-04-17 07:32:07 | INFO     | fedaugment.utils.logger:44 | Epoch 155: train_loss: 2.21067
+2026-04-17 07:37:46 | INFO     | fedaugment.utils.logger:44 | Epoch 156: train_loss: 2.21050
+2026-04-17 07:43:27 | INFO     | fedaugment.utils.logger:44 | Epoch 157: train_loss: 2.21042
+2026-04-17 07:49:15 | INFO     | fedaugment.utils.logger:44 | Epoch 158: train_loss: 2.21006
+2026-04-17 07:55:13 | INFO     | fedaugment.utils.logger:44 | Epoch 159: train_loss: 2.20998
+2026-04-17 08:01:18 | INFO     | fedaugment.utils.logger:44 | Epoch 160: train_loss: 2.20958
+2026-04-17 08:06:49 | INFO     | fedaugment.utils.logger:44 | Epoch 161: train_loss: 2.20959
+2026-04-17 08:12:41 | INFO     | fedaugment.utils.logger:44 | Epoch 162: train_loss: 2.20925
+2026-04-17 08:18:09 | INFO     | fedaugment.utils.logger:44 | Epoch 163: train_loss: 2.20906
+2026-04-17 08:23:48 | INFO     | fedaugment.utils.logger:44 | Epoch 164: train_loss: 2.20883
+2026-04-17 08:29:35 | INFO     | fedaugment.utils.logger:44 | Epoch 165: train_loss: 2.20871
+2026-04-17 08:35:10 | INFO     | fedaugment.utils.logger:44 | Epoch 166: train_loss: 2.20859
+2026-04-17 08:40:36 | INFO     | fedaugment.utils.logger:44 | Epoch 167: train_loss: 2.20823
+2026-04-17 08:46:11 | INFO     | fedaugment.utils.logger:44 | Epoch 168: train_loss: 2.20800
+2026-04-17 08:51:50 | INFO     | fedaugment.utils.logger:44 | Epoch 169: train_loss: 2.20790
+2026-04-17 08:57:37 | INFO     | fedaugment.utils.logger:44 | Epoch 170: train_loss: 2.20780
+2026-04-17 09:03:21 | INFO     | fedaugment.utils.logger:44 | Epoch 171: train_loss: 2.20751
+2026-04-17 09:08:49 | INFO     | fedaugment.utils.logger:44 | Epoch 172: train_loss: 2.20726
+2026-04-17 09:14:13 | INFO     | fedaugment.utils.logger:44 | Epoch 173: train_loss: 2.20697
+2026-04-17 09:19:43 | INFO     | fedaugment.utils.logger:44 | Epoch 174: train_loss: 2.20687
+2026-04-17 09:25:00 | INFO     | fedaugment.utils.logger:44 | Epoch 175: train_loss: 2.20666
+2026-04-17 09:30:33 | INFO     | fedaugment.utils.logger:44 | Epoch 176: train_loss: 2.20642
+2026-04-17 09:35:44 | INFO     | fedaugment.utils.logger:44 | Epoch 177: train_loss: 2.20613
+2026-04-17 09:41:14 | INFO     | fedaugment.utils.logger:44 | Epoch 178: train_loss: 2.20597
+2026-04-17 09:46:42 | INFO     | fedaugment.utils.logger:44 | Epoch 179: train_loss: 2.20569
+2026-04-17 09:51:58 | INFO     | fedaugment.utils.logger:44 | Epoch 180: train_loss: 2.20568
+2026-04-17 09:57:17 | INFO     | fedaugment.utils.logger:44 | Epoch 181: train_loss: 2.20535
+2026-04-17 10:02:31 | INFO     | fedaugment.utils.logger:44 | Epoch 182: train_loss: 2.20511
+2026-04-17 10:08:08 | INFO     | fedaugment.utils.logger:44 | Epoch 183: train_loss: 2.20499
+2026-04-17 10:13:49 | INFO     | fedaugment.utils.logger:44 | Epoch 184: train_loss: 2.20482
+2026-04-17 10:18:57 | INFO     | fedaugment.utils.logger:44 | Epoch 185: train_loss: 2.20457
+2026-04-17 10:24:06 | INFO     | fedaugment.utils.logger:44 | Epoch 186: train_loss: 2.20430
+2026-04-17 10:29:21 | INFO     | fedaugment.utils.logger:44 | Epoch 187: train_loss: 2.20406
+2026-04-17 10:34:37 | INFO     | fedaugment.utils.logger:44 | Epoch 188: train_loss: 2.20386
+2026-04-17 10:39:57 | INFO     | fedaugment.utils.logger:44 | Epoch 189: train_loss: 2.20369
+2026-04-17 10:45:30 | INFO     | fedaugment.utils.logger:44 | Epoch 190: train_loss: 2.20344
+2026-04-17 10:50:54 | INFO     | fedaugment.utils.logger:44 | Epoch 191: train_loss: 2.20337
+2026-04-17 10:55:59 | INFO     | fedaugment.utils.logger:44 | Epoch 192: train_loss: 2.20311
+2026-04-17 11:01:03 | INFO     | fedaugment.utils.logger:44 | Epoch 193: train_loss: 2.20290
+2026-04-17 11:06:18 | INFO     | fedaugment.utils.logger:44 | Epoch 194: train_loss: 2.20260
+2026-04-17 11:12:00 | INFO     | fedaugment.utils.logger:44 | Epoch 195: train_loss: 2.20236
+2026-04-17 11:17:11 | INFO     | fedaugment.utils.logger:44 | Epoch 196: train_loss: 2.20224
+2026-04-17 11:22:30 | INFO     | fedaugment.utils.logger:44 | Epoch 197: train_loss: 2.20200
+2026-04-17 11:27:47 | INFO     | fedaugment.utils.logger:44 | Epoch 198: train_loss: 2.20178
+2026-04-17 11:33:13 | INFO     | fedaugment.utils.logger:44 | Epoch 199: train_loss: 2.20152
+2026-04-17 11:38:54 | INFO     | fedaugment.utils.logger:44 | Epoch 200: train_loss: 2.20152
+2026-04-17 11:44:16 | INFO     | fedaugment.utils.logger:44 | Epoch 201: train_loss: 2.20119
+2026-04-17 11:49:33 | INFO     | fedaugment.utils.logger:44 | Epoch 202: train_loss: 2.20094
+2026-04-17 11:55:12 | INFO     | fedaugment.utils.logger:44 | Epoch 203: train_loss: 2.20082
+2026-04-17 12:00:37 | INFO     | fedaugment.utils.logger:44 | Epoch 204: train_loss: 2.20056
+2026-04-17 12:06:16 | INFO     | fedaugment.utils.logger:44 | Epoch 205: train_loss: 2.20028
+2026-04-17 12:11:58 | INFO     | fedaugment.utils.logger:44 | Epoch 206: train_loss: 2.20009
+2026-04-17 12:17:29 | INFO     | fedaugment.utils.logger:44 | Epoch 207: train_loss: 2.19992
+2026-04-17 12:23:14 | INFO     | fedaugment.utils.logger:44 | Epoch 208: train_loss: 2.19990
+2026-04-17 12:29:14 | INFO     | fedaugment.utils.logger:44 | Epoch 209: train_loss: 2.19965
+2026-04-17 12:34:57 | INFO     | fedaugment.utils.logger:44 | Epoch 210: train_loss: 2.19937
+2026-04-17 12:40:33 | INFO     | fedaugment.utils.logger:44 | Epoch 211: train_loss: 2.19931
+2026-04-17 12:45:59 | INFO     | fedaugment.utils.logger:44 | Epoch 212: train_loss: 2.19902
+2026-04-17 12:51:39 | INFO     | fedaugment.utils.logger:44 | Epoch 213: train_loss: 2.19880
+2026-04-17 12:57:15 | INFO     | fedaugment.utils.logger:44 | Epoch 214: train_loss: 2.19858
+2026-04-17 13:02:59 | INFO     | fedaugment.utils.logger:44 | Epoch 215: train_loss: 2.19862
+2026-04-17 13:09:00 | INFO     | fedaugment.utils.logger:44 | Epoch 216: train_loss: 2.19834
+2026-04-17 13:14:40 | INFO     | fedaugment.utils.logger:44 | Epoch 217: train_loss: 2.19810
+2026-04-17 13:20:39 | INFO     | fedaugment.utils.logger:44 | Epoch 218: train_loss: 2.19799
+2026-04-17 13:26:06 | INFO     | fedaugment.utils.logger:44 | Epoch 219: train_loss: 2.19767
+2026-04-17 13:31:33 | INFO     | fedaugment.utils.logger:44 | Epoch 220: train_loss: 2.19777
+2026-04-17 13:37:05 | INFO     | fedaugment.utils.logger:44 | Epoch 221: train_loss: 2.19746
+2026-04-17 13:42:28 | INFO     | fedaugment.utils.logger:44 | Epoch 222: train_loss: 2.19732
+2026-04-17 13:47:31 | INFO     | fedaugment.utils.logger:44 | Epoch 223: train_loss: 2.19728
+2026-04-17 13:52:40 | INFO     | fedaugment.utils.logger:44 | Epoch 224: train_loss: 2.19706
+2026-04-17 13:58:12 | INFO     | fedaugment.utils.logger:44 | Epoch 225: train_loss: 2.19696
+2026-04-17 14:03:28 | INFO     | fedaugment.utils.logger:44 | Epoch 226: train_loss: 2.19688
+2026-04-17 14:08:26 | INFO     | fedaugment.utils.logger:44 | Epoch 227: train_loss: 2.19677
+2026-04-17 14:13:22 | INFO     | fedaugment.utils.logger:44 | Epoch 228: train_loss: 2.19650
+2026-04-17 14:18:22 | INFO     | fedaugment.utils.logger:44 | Epoch 229: train_loss: 2.19641
+2026-04-17 14:23:22 | INFO     | fedaugment.utils.logger:44 | Epoch 230: train_loss: 2.19641
+2026-04-17 14:28:20 | INFO     | fedaugment.utils.logger:44 | Epoch 231: train_loss: 2.19612
+2026-04-17 14:33:28 | INFO     | fedaugment.utils.logger:44 | Epoch 232: train_loss: 2.19610
+2026-04-17 14:38:34 | INFO     | fedaugment.utils.logger:44 | Epoch 233: train_loss: 2.19601
+2026-04-17 14:43:30 | INFO     | fedaugment.utils.logger:44 | Epoch 234: train_loss: 2.19586
+2026-04-17 14:48:35 | INFO     | fedaugment.utils.logger:44 | Epoch 235: train_loss: 2.19585
+2026-04-17 14:53:58 | INFO     | fedaugment.utils.logger:44 | Epoch 236: train_loss: 2.19579
+2026-04-17 14:59:15 | INFO     | fedaugment.utils.logger:44 | Epoch 237: train_loss: 2.19576
+2026-04-17 15:04:17 | INFO     | fedaugment.utils.logger:44 | Epoch 238: train_loss: 2.19563
+2026-04-17 15:09:14 | INFO     | fedaugment.utils.logger:44 | Epoch 239: train_loss: 2.19573
+2026-04-17 15:14:19 | INFO     | fedaugment.utils.logger:44 | Epoch 240: train_loss: 2.19541
+2026-04-17 15:19:27 | INFO     | fedaugment.utils.logger:44 | Epoch 241: train_loss: 2.19526
+2026-04-17 15:24:38 | INFO     | fedaugment.utils.logger:44 | Epoch 242: train_loss: 2.19538
+2026-04-17 15:29:57 | INFO     | fedaugment.utils.logger:44 | Epoch 243: train_loss: 2.19536
+2026-04-17 15:35:16 | INFO     | fedaugment.utils.logger:44 | Epoch 244: train_loss: 2.19536
+2026-04-17 15:40:40 | INFO     | fedaugment.utils.logger:44 | Epoch 245: train_loss: 2.19522
+2026-04-17 15:46:07 | INFO     | fedaugment.utils.logger:44 | Epoch 246: train_loss: 2.19526
+2026-04-17 15:51:39 | INFO     | fedaugment.utils.logger:44 | Epoch 247: train_loss: 2.19524
+2026-04-17 15:57:14 | INFO     | fedaugment.utils.logger:44 | Epoch 248: train_loss: 2.19531
+2026-04-17 16:02:40 | INFO     | fedaugment.utils.logger:44 | Epoch 249: train_loss: 2.19518
+2026-04-17 16:02:40 | INFO     | lightning_utilities.core.rank_zero:60 | `Trainer.fit` stopped: `max_epochs=250` reached.
+2026-04-17 16:02:50 | INFO     | fedaugment.projections.main:176 | Starting testing phase...
+2026-04-17 16:02:50 | INFO     | lightning.pytorch.accelerators.cuda:61 | LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+2026-04-17 16:02:51 | INFO     | fedaugment.utils.logger:38 | {'module_kwargs': CLModuleConfig(model_type='projection_head', out_dim=1024, hidden_dims=[1024, 1536, 1536], activation='silu', normalization='batch', dropout=0.0, no_val_orchestrator=True, no_test_orchestrator=False), 'criterion': CriterionConfig(class_='MultiViewNTXentLoss', kwargs={'temperature': 0.1}), 'optim_configs': [OptimizerConfig(class_='AdamW', kwargs={'lr': 0.001, 'weight_decay': 0.01})], 'sched_configs': [LRSchedulerConfig(class_='OneCycleLR', interval='epoch', frequency=1, monitor=None, kwargs={'max_lr': 0.003, 'total_steps': None, 'pct_start': 0.1, 'anneal_strategy': 'cos', 'div_factor': 10.0, 'final_div_factor': 1000.0})], 'pipeline_names': ['distilroberta-dj_adpt', 'mini_l12-dj_adpt', 'mini_l6-dj_adpt', 'gte_base-dj_adpt', 'gtr_t5-dj_adpt', 'mpnet-dj_adpt'], 'embedding_dims': [768, 384, 384, 768, 768, 768], 'data_batch_size': 4096, 'metric_batch_size': 65536}
+2026-04-17 16:04:43 | DEBUG    | fedaugment.projections.metrics.base:115 | Computing CosineSimilarityOrchestrator metrics.
+2026-04-17 16:04:43 | WARNING  | fedaugment.projections.metrics.base:117 | Number of projections (8891658) is not divisible by chunk size (65536). This may lead to suboptimal performance.
+2026-04-17 18:24:16 | DEBUG    | fedaugment.projections.metrics.base:198 | Finalized CosineSimilarityOrchestrator metrics
+2026-04-17 18:24:16 | INFO     | fedaugment.utils.logger:44 | Epoch 250: test_loss: 2.23452, test_cossim_mean: 0.00033, test_entity_stability_15: 0.69664, test_entity_stability_5: 0.69081, test_entity_stability_50: 0.76235, test_same_lbl_cossim_mean: 0.98679
+2026-04-17 18:24:17 | INFO     | fedaugment.projections.main:183 | Best model checkpoint saved at /local-ssd/lennart/checkpoints/curation/webtable_full/last.ckpt

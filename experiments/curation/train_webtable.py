@@ -21,7 +21,7 @@ if __name__ == "__main__":
     )
     torch.set_float32_matmul_precision("high")
 
-    projection_model_spec = PROJECTION_MODEL_REGISTRY["cl_default"]
+    projection_model_spec = PROJECTION_MODEL_REGISTRY["cl_curation"]
     embedding_views = [
         "distilroberta-dj_adpt",
         "mini_l12-dj_adpt",
@@ -106,6 +106,7 @@ if __name__ == "__main__":
                 max_epochs=projection_model_spec.epochs,
                 precision="bf16-mixed",
                 patience=projection_model_spec.patience,
+                max_time=None,
             ),
             compile_model=True,
         )

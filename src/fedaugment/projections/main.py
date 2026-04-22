@@ -96,7 +96,7 @@ def train_projection_model(
         config.trainer.enable_progress_bar = False
         ckpt_monitor = None
     elif config.projection_model.class_ == "ContrastiveLearningModel":
-        ckpt_monitor = "val_loss"
+        ckpt_monitor = None if data_module.val_dataloader() is None else "val_loss"
     else:
         # vec2vec models
         val_metrics = list(projection_model.val_metrics.keys())
@@ -110,7 +110,7 @@ def train_projection_model(
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     checkpoint_callback = ModelCheckpoint(
         dirpath=ckpt_dir,
-        filename=(f"version-{config.experiment_version}-{{epoch:02d}}-{{val_loss:.4f}}"),
+        filename=f"version-{config.experiment_version}-{{epoch:02d}}-{{val_loss:.4f}}",
         monitor=ckpt_monitor,
         save_last="link",
         save_top_k=1,

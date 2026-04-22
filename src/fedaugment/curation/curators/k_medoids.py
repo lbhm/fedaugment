@@ -40,7 +40,7 @@ def _pairwise_distance_fn(
 
 
 class KMedoids(Curator):
-    """Curator that applies the k-medoids algorithm to pick representative indices."""
+    """Curator that applies the k-Medoids algorithm to pick representative indices."""
 
     def __init__(
         self,
@@ -58,7 +58,7 @@ class KMedoids(Curator):
     @torch.no_grad()
     def curate(self, candidates: Tensor, k: int, seed: int) -> Tensor:
         if candidates.dtype == torch.bfloat16:
-            logger.warning("KMedoids does not support bfloat16; casting to float32")
+            logger.warning("k-Medoids does not support bfloat16; casting to float32")
             candidates = candidates.to(torch.float32)
 
         n = candidates.shape[0]
@@ -72,7 +72,7 @@ class KMedoids(Curator):
 
         for _ in tqdm(
             range(self.max_iters),
-            desc="Iterating k-medoids",
+            desc="Iterating k-Medoids",
             total=self.max_iters,
             leave=False,
             unit="it",

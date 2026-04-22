@@ -1,9 +1,10 @@
 import abc
-from typing import cast
+from typing import Any, cast
 
 import lightning as L
 import torch
 from lightning.pytorch.utilities.types import OptimizerLRScheduler
+from loguru import logger
 from pydantic import BaseModel
 from torch import Tensor
 from torchmetrics import Metric, MetricCollection
@@ -88,18 +89,54 @@ class ProjectionModel(L.LightningModule, abc.ABC):
         optimizer_class = getattr(torch.optim, self.optim_configs[0].class_)
         optimizer = optimizer_class(params=self.parameters(), **self.optim_configs[0].kwargs)
         scheduler_class = getattr(torch.optim.lr_scheduler, self.sched_configs[0].class_)
-        scheduler = scheduler_class(optimizer=optimizer, **self.sched_configs[0].kwargs)
+        scheduler_kwargs = self._resolve_scheduler_kwargs(self.sched_configs[0])
+        scheduler = scheduler_class(optimizer=optimizer, **scheduler_kwargs)
 
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
                 "scheduler": scheduler,
-                "interval": self.sched_configs[0].interval,
+                "interval": self._resolve_scheduler_interval(self.sched_configs[0]),
                 "frequency": self.sched_configs[0].frequency,
                 "monitor": self.sched_configs[0].monitor,
                 "strict": True,
             },
         }
+
+    def _resolve_scheduler_kwargs(self, sched_config: LRSchedulerConfig) -> dict[str, Any]:
+        kwargs = dict(sched_config.kwargs)
+
+        if sched_config.class_ != "OneCycleLR":
+            return kwargs
+
+        if kwargs.get("total_steps") is not None:
+            return kwargs
+
+        if self.trainer is None:
+            msg = (
+                "OneCycleLR requires total_steps. Trainer is not attached yet, "
+                "so `trainer.estimated_stepping_batches` is unavailable."
+            )
+            raise RuntimeError(msg)
+
+        kwargs["total_steps"] = int(self.trainer.estimated_stepping_batches)
+        logger.info(
+            "Setting OneCycleLR total_steps to trainer.estimated_stepping_batches={}.",
+            kwargs["total_steps"],
+        )
+        return kwargs
+
+    def _resolve_scheduler_interval(self, sched_config: LRSchedulerConfig) -> str:
+        if sched_config.class_ != "OneCycleLR":
+            return sched_config.interval
+
+        if sched_config.interval != "step":
+            logger.warning(
+                "OneCycleLR requires interval='step'. "
+                "Overriding configured interval='{}' to 'step'.",
+                sched_config.interval,
+            )
+        return "step"
 
     @property
     @abc.abstractmethod

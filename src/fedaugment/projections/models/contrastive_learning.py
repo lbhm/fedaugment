@@ -119,13 +119,14 @@ class ContrastiveLearningModel(ProjectionModel):
         optimizer = optimizer_class(param_groups)
 
         scheduler_class = getattr(torch.optim.lr_scheduler, self.sched_configs[0].class_)
-        scheduler = scheduler_class(optimizer=optimizer, **self.sched_configs[0].kwargs)
+        scheduler_kwargs = self._resolve_scheduler_kwargs(self.sched_configs[0])
+        scheduler = scheduler_class(optimizer=optimizer, **scheduler_kwargs)
 
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
                 "scheduler": scheduler,
-                "interval": self.sched_configs[0].interval,
+                "interval": self._resolve_scheduler_interval(self.sched_configs[0]),
                 "frequency": self.sched_configs[0].frequency,
                 "monitor": self.sched_configs[0].monitor,
                 "strict": True,
