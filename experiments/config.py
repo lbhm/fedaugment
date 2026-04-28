@@ -154,7 +154,7 @@ EMBEDDING_MODEL_REGISTRY: dict[str, EmbeddingModelSpec] = {
     "gtr_t5": EmbeddingModelSpec(
         model_id="sentence-transformers/gtr-t5-base",
         alias="gtr_t5",
-        default_batch_size=1024,
+        default_batch_size=256,
         revision="9801579ce813fb37541e6098dffd17959fffcd6e",
     ),
     "gte_base": EmbeddingModelSpec(
@@ -413,6 +413,34 @@ PROJECTION_MODEL_REGISTRY: dict[str, ProjectionModelSpec] = {
         optimizers=[OptimizerConfig(class_="AdamW", kwargs={"lr": 1e-3, "weight_decay": 0.01})],
         schedulers=[LRSchedulerConfig(class_="CosineAnnealingLR", kwargs={"T_max": 200})],
         patience=None,
+    ),
+    # Longer training and a different scheduler
+    "cl_curation": ProjectionModelSpec(
+        class_="ContrastiveLearningModel",
+        module_kwargs=CLModuleConfig(
+            out_dim=1024,
+            hidden_dims=[1024, 1536, 1536],
+            activation="silu",
+            normalization="batch",
+            dropout=0.0,
+            no_val_orchestrator=True,
+        ),
+        criterion=CriterionConfig(class_="MultiViewNTXentLoss", kwargs={"temperature": 0.1}),
+        optimizers=[OptimizerConfig(class_="AdamW", kwargs={"lr": 1e-3, "weight_decay": 0.01})],
+        schedulers=[
+            LRSchedulerConfig(
+                class_="OneCycleLR",
+                kwargs={
+                    "max_lr": 3e-3,
+                    "total_steps": None,  # if set via epochs/steps
+                    "pct_start": 0.1,
+                    "anneal_strategy": "cos",
+                    "div_factor": 10.0,
+                    "final_div_factor": 1000.0,
+                },
+            )
+        ],
+        epochs=250,
     ),
     # Vec2Vec: GAN-based approach with discriminators and translators between embedding spaces
     "v2v": ProjectionModelSpec(

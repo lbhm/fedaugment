@@ -4,7 +4,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![License](https://img.shields.io/github/license/lbhm/fedaugment)](https://github.com/lbhm/fedaugment/blob/main/LICENSE)
 
-This repository contains the source code, experiment logs, and result analyses for our paper
+This repository contains the source code, experiment logs, and result analysis for our paper
 **"FedAugment: Table Augmentation Search over Decentralized Data Repositories"**.
 
 ## 🏗️ Architecture Overview
@@ -13,7 +13,7 @@ The repository is structured as follows:
 
 ```bash
 fedaugment/
-├── analysis        # Jupyter notebooks with result analyses and plotting code
+├── analysis        # Jupyter notebooks with result analysis and plotting code
 ├── experiments     # Python and Bash scripts with experiment configurations
 ├── logs            # results of our experimental evaluation
 ├── scripts         # utility scripts for data processing and evaluation
@@ -30,67 +30,69 @@ The following diagram illustrates the overall architecture of the FedAugment wor
 +----------+-----------+
            |
            v
-+----------------------------------------------------------------------------------+
-|                             1. EMBEDDING GENERATION                              |
-|     +-------------+   +-------------+   +-------------+       +-------------+    |
-|     |  View 1     |   |  View 2     |   |  View 3     |  ...  |  View N     |    |
-|     | mpnet +     |   | distilrob + |   | gte_base +  |       | qwen3_8b +  |    |
-|     | dj_adpt     |   | dj_adpt     |   | dj_adpt     |       | dj_adpt     |    |
-|     +------+------+   +------+------+   +------+------+       +------+------+    |
-|            |                 |                 |                     |           |
-|            v                 v                 v                     v           |
-|        [384-dim]         [768-dim]         [768-dim]             [4096-dim]      |
-|        embeddings        embeddings        embeddings            embeddings      |
-+------------+-----------------+-----------------+---------------------+----------+
-             |                 |                 |                     |
-             +-----------------+----------+------+---------------------+
-                                          |
-                                          v
-+----------------------------------------------------------------------------------+
-|                           2. PROJECTION MODEL TRAINING                           |
-|                                                                                  |
-|  Training Data                Projection Models:                                 |
-|  +---------------------+      - CL (Contrastive Learning) --- Neural network     |
-|  | Curated subset      |      - LA2M (Local Isometry) ------- Clustering-based   |
-|  | (FFT/Grid/Random)   |      - Vec2Vec --------------------- GAN-based          |
-|  +---------------------+      - Procrustes ------------------ Orthogonal align   |
-|                                                                                  |
-|  Output: Learned transformations that map all views to a common vector space     |
-+-----------------------------------------+----------------------------------------+
-                                          |
-                                          v
-+----------------------------------------------------------------------------------+
-|                            3. ALIGNED EMBEDDING SPACE                            |
-|                                                                                  |
-|      View 1        View 2        View 3     ...      View N                      |
-|        |             |             |                   |                         |
-|        +-------------+-------------+-------------------+                         |
-|                              |                                                   |
-|                    +---------v---------+                                         |
-|                    |      Common       |                                         |
-|                    |  Embedding Space  |                                         |
-|                    +---------+---------+                                         |
-|                              |                                                   |
-|                    +---------v---------+                                         |
-|                    |    HNSW Index     |  < Fast approximate nearest neighbor    |
-|                    +-------------------+                                         |
-+-----------------------------------------+----------------------------------------+
-                                          |
-                                          v
-+----------------------------------------------------------------------------------+
-|                            4. TABLE AUGMENTATION TASKS                           |
-|                                                                                  |
-|        +-----------------------------+    +-----------------------------+        |
-|        |       JOIN DISCOVERY        |    |       UNION DISCOVERY       |        |
-|        |                             |    |                             |        |
-|        |  Query: Column A            |    |  Query: Table X             |        |
-|        |     v                       |    |     v                       |        |
-|        |  Find columns that can      |    |  Find tables with           |        |
-|        |  be joined with A           |    |  compatible schemas         |        |
-|        |     v                       |    |     v                       |        |
-|        |  Metrics: P@k, R@k, MAP     |    |  Metrics: P@k, R@k, MAP     |        |
-|        +-----------------------------+    +-----------------------------+        |
-+----------------------------------------------------------------------------------+
++---------------------------------------------------------------------------------+
+|                              1. EMBEDDING GENERATION                            |
+|      +------------+   +------------+   +------------+       +------------+      |
+|      |   View 1   |   |   View 2   |   |   View 3   |  ...  |   View N   |      |
+|      |  mpnet +   |   |  gtr_t5 +  |   | gte_base + |       | qwen3_8b + |      |
+|      |  dj_adpt   |   |  dj_adpt   |   |  dj_adpt   |       |  dj_adpt   |      |
+|      +------+-----+   +------+-----+   +------+-----+       +------+-----+      |
+|             |                |                |                    |            |
+|             v                v                v                    v            |
+|         [384-dim]        [768-dim]        [768-dim]            [4096-dim]       |
+|         embeddings       embeddings       embeddings           embeddings       |
++-------------+----------------+----------------+--------------------+------------+
+              |                |                |                    |
+              +----------------+---------+------+--------------------+
+                                         |
+                                         v
++---------------------------------------------------------------------------------+
+|                           2. PROJECTION MODEL TRAINING                          |
+|                                                                                 |
+|  Training Data                Projection Models:                                |
+|  +---------------------+      - CL (Contrastive Learning) --- Neural network    |
+|  | Curated subset      |      - LA2M (Local Isometry) ------- Clustering-based  |
+|  | (FFT/Grid/Random)   |      - Vec2Vec --------------------- GAN-based         |
+|  +---------------------+      - Procrustes ------------------ Orthogonal align  |
+|                                                                                 |
+|  Output: Learned transformations that map all views to a common vector space    |
++----------------------------------------+----------------------------------------+
+                                         |
+                                         v
++---------------------------------------------------------------------------------+
+|                           3. ALIGNED EMBEDDING SPACE                            |
+|                                                                                 |
+|             View 1    View 2    View 3    ...    View N                         |
+|               |         |         |                |                            |
+|               +---------+---------+----------------+                            |
+|                                 |                                               |
+|                                 v                                               |
+|                       +-------------------+                                     |
+|                       |      Common       |                                     |
+|                       |  Embedding Space  |                                     |
+|                       +---------+---------+                                     |
+|                                 |                                               |
+|                                 v                                               |
+|                       +-------------------+                                     |
+|                       |    HNSW Index     | < Fast approximate nearest neighbor |
+|                       +-------------------+                                     |
++----------------------------------------+----------------------------------------+
+                                         |
+                                         v
++---------------------------------------------------------------------------------+
+|                           4. TABLE AUGMENTATION TASKS                           |
+|                                                                                 |
+|        +-----------------------------+   +-----------------------------+        |
+|        |       JOIN DISCOVERY        |   |       UNION DISCOVERY       |        |
+|        |                             |   |                             |        |
+|        |  Query: Column A            |   |  Query: Table X             |        |
+|        |     v                       |   |     v                       |        |
+|        |  Find columns that can      |   |  Find tables with           |        |
+|        |  be joined with A           |   |  compatible schemas         |        |
+|        |     v                       |   |     v                       |        |
+|        |  Metrics: P@k, R@k, MAP     |   |  Metrics: P@k, R@k, MAP     |        |
+|        +-----------------------------+   +-----------------------------+        |
++---------------------------------------------------------------------------------+
 ```
 
 ## 🚀 Getting Started
@@ -135,7 +137,7 @@ data/
 │
 ├── datasets/                              # Raw tabular data
 │   │
-│   └── {dataset_name}/                    # e.g., webtable, omnimatch_city_train, santos_small, freyja
+│   └── {dataset_name}/                    # e.g., webtable, omnimatch_city_test, omnimatch_culture_test, santos_small, freyja
 │       │
 │       ├── datasets/                      # Full original dataset
 │       │   ├── pq/                        # Parquet files
@@ -143,7 +145,7 @@ data/
 │       │   └── csv/                       # CSV files
 │       │       └── {table_id}.csv
 │       │
-│       ├── queries/                       # Query tables and ground truth (queries are optional, if they don't exist, we use tables from datasets/)
+│       ├── queries/                       # Query tables and ground truth (query tables are optional, if absent, queries use tables from datasets/)
 │       │   ├── pq/                        # Query tables (parquet)
 │       │   ├── csv/                       # Query tables (csv)
 │       │   ├── join_queries.csv           # Join query list (only for join tasks)
@@ -225,7 +227,7 @@ data/
 
 - **Dataset names**: `webtable`, `omnimatch_city_test`, `omnimatch_culture_test`, `santos_small`, `freyja`
 - **Embedding pipelines**: `{model}-{strategy}`
-  - Models: `mpnet`, `distilroberta`, `gte_base`, `gtr_t5`, `jina_v3`, `mini_l12`, `mini_l6`, etc.
+  - Models: `mpnet`, `distilroberta`, `gte_base`, `gtr_t5`, `mini_l12`, `mini_l6`, etc.
   - Strategies: `dj_orig` (DeepJoin original), `dj_adpt` (DeepJoin adapted), etc.
 - **Curation methods**: `{algorithm}[_{metric}]-{model}-{strategy}-k={n_columns}[-pca={variance}]`
   - Algorithms: `fft`, `grid`, `random`

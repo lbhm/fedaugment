@@ -73,4 +73,43 @@ uv run python -m experiments.embeddings.embed_dataset \
   --models "${WEBTABLE_MODELS[@]}" \
   --strategy dj_adapted
 
+# DeepJoin/Starmie finetuning evaluation
+# For the additional finetuning experiments, you need to download the DeepJoin model checkpoint from
+# https://github.com/BIT-DataLab/LakeBench/tree/main/join/Deepjoin/output/deepjoin_webtable_training-all-mpnet-base-v2-2023-10-18_19-54-27
+# and update `DEEPJOIN_CHECKPOINT` accordingly.
+# To finetune a Starmie model and generate embeddings, please see the script at
+# https://github.com/leonardgeissler/starmie/blob/fedaugment-integration/train_and_export_for_fedaugment.py
+# and copy the resulting embeddings to $EMB_ROOT.
+DEEPJOIN_CHECKPOINT="data/checkpoints/deepjoin/deepjoin_webtable_training-all-mpnet-base-v2-2023-10-18_19-54-27"
+
+# Embed Freyja and Omnimatch with the DeepJoin model checkpoint
+DATASETS=(
+  "omnimatch_city_test|$DATA_ROOT/omnimatch_city_test/datasets/pq|$DATA_ROOT/omnimatch_city_test/datasets/pq"
+  "omnimatch_culture_test|$DATA_ROOT/omnimatch_culture_test/datasets/pq|$DATA_ROOT/omnimatch_culture_test/datasets/pq"
+  "freyja|$DATA_ROOT/freyja/datasets/pq|$DATA_ROOT/freyja/datasets/pq"
+)
+
+echo "=== Embedding with DeepJoin checkpoint: $DEEPJOIN_CHECKPOINT ==="
+for ds in "${DATASETS[@]}"; do
+  IFS='|' read -r name data_path query_path <<< "$ds"
+
+  echo "--- $name (data) ---"
+  uv run python -m experiments.embeddings.embed_dataset \
+    --data-path "$data_path" \
+    --output-path "$EMB_ROOT/$name/datasets" \
+    --strategy dj_adapted \
+    --local-checkpoints "$DEEPJOIN_CHECKPOINT" \
+      --encoder-batch-size 1024
+
+  if [ "$data_path" != "$query_path" ]; then
+    echo "--- $name (queries) ---"
+    uv run python -m experiments.embeddings.embed_dataset \
+      --data-path "$query_path" \
+      --output-path "$EMB_ROOT/$name/queries" \
+      --strategy dj_adapted \
+      --local-checkpoints "$DEEPJOIN_CHECKPOINT" \
+      --encoder-batch-size 1024
+  fi
+done
+
 echo "=== Model embedding done ==="
