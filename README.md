@@ -257,4 +257,17 @@ bash experiments/run_all.sh
 
 ## 📖 Citation
 
-TBD
+```bibtex
+@article{behme_fedaugment_2026,
+  title        = {FedAugment: Table Augmentation Search over Decentralized Data Repositories},
+  author       = {Behme, Lennart and Badura, Emil and Gei{\ss}ler, Leonard and Boehm, Matthias and Abedjan, Ziawasch and Markl, Volker},
+  year         = 2026,
+  journal      = {Proceedings of the VLDB Endowment},
+  publisher    = {VLDB Endowment},
+  volume       = 19,
+  number       = 10,
+  pages        = {2672--2685},
+  doi          = {10.14778/3828612.3828623},
+  issn         = {2150-8097}
+}
+```
