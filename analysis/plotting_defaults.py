@@ -72,8 +72,8 @@ def set_style() -> None:
             "font.family": "serif",  # use serif font for text elements
             "text.usetex": True,  # use inline math for ticks
             "figure.autolayout": True,  # tight layout
-            "savefig.format": "pdf",  # {png, ps, pdf, svg}
             "savefig.bbox": "tight",  # {tight, standard}
+            "savefig.format": "pdf",  # {pdf, pgf}
             "savefig.pad_inches": 0.0075,  # padding to be used, when bbox is set to 'tight'
             "savefig.transparent": False,  # transparent background
             # Layout settings #
